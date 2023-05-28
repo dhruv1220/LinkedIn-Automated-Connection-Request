@@ -9,11 +9,11 @@ That's it. That's the list.
 ## How to Run
 1. [Create a new chrome snippet](#create-chrome-snippet)
 2. Copy the `snippet.js` code inside the chrome snippet
-3. Make relevant changes to `snippet.js` based on your requirements
-4. Go to the relevant LinkedIn URL where you will run the snippet
-5. Run the chrome snippet
+3. [Make relevant changes to `snippet.js` based on your requirements](#code-changes)
+4. [Go to the relevant LinkedIn URL where you will run the snippet](#correct-url)
+5. [Run the chrome snippet](#run-chrome-snippet)
 
-### Relevant snippet.js changes
+### Relevant snippet.js changes <a name="code-changes"></a>
 Don't worry about making too many changes to the code! I have kept the part you need to edit in the beginning of the code itself.
 ```console
 config: {
@@ -34,7 +34,7 @@ config: {
 - If you want to add a personalized note in your connection request, set `addNote` value to `true` and put the note in `note`. Your `note` cannot be more than 300 characters.
 - If you want to add profile job title filters, set `addHeadlineFilter` value to `true` and add a list of keywords using which you want the profiles to be filtered (See given example for reference on how to write the list). The keyword filtering isn't case sensitive.
 
-### Relevant LinkedIn URL
+### Relevant LinkedIn URL <a name="correct-url"></a>
 You cannot run the snippet anywhere on LinkedIn. You need to identify a specific company to whose people you want to send connection requests. I will take the example of 'Apple' here.
 
 1. Seach 'Apple' on your LinkedIn search bar
@@ -50,7 +50,7 @@ You cannot run the snippet anywhere on LinkedIn. You need to identify a specific
 4. Click on '+ New Snippet'
 5. You will now be able to see the Code Editor UI where you can add the `snippet.js` code
 
-#### Running a Chrome Snippet
+#### Running a Chrome Snippet <a name="run-chrome-snippet"></a>
 1. Follow steps 1-3 mentioned under `Creating a Chrome Snippet`
 2. Open the Chrome Snippet you want to run
 3. Press 'Control + Enter' (Windows/Linux) or 'Command + Enter' (MacOS)
