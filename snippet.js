@@ -9,7 +9,8 @@ Linkedin = {
         totalRequestsSent: 0,
         // set to false to skip adding note in invites
         addNote: true,
-        note: `Hi, I’m Dhruv. I’m a CS Undergrad with experience in Data Science and Dev roles. I was hoping to find a role in your organisation that would be a good fit. I’d appreciate if you could refer me. Resume Link: https://drive.google.com/file/d/1-R6GT0dh83n-4i7ywle7Vx8GjTCqYWjs/view?usp=sharing`
+        note: `Hi, I’m Dhruv. I’m a CS Undergrad with experience in Data Science and Dev roles. I was hoping to find a role in your organisation that would be a good fit. I’d appreciate if you could refer me. Resume Link: https://drive.google.com/file/d/1-R6GT0dh83n-4i7ywle7Vx8GjTCqYWjs/view?usp=sharing`,
+        profileHeadlineKeywords: ["developer", "data", "analyst", "ceo", "cto"]
     },
     init: function (data, config) {
         console.info("INFO: script initialized on the page...");
@@ -49,34 +50,52 @@ Linkedin = {
             data.pageButtonTotal = data.pageButtons.length;
             console.info("INFO: " + data.pageButtonTotal + " connect buttons found");
             data.pageButtonIndex = 0;
-            var names = document.getElementsByClassName("entity-result__title-text");
-            names = [...names].filter(function (element) {
-                return element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.textContent.includes("Connect\n");
+            data.connectNames = [...data.pageButtons].map(function (element) {
+            	return element.parentNode.previousElementSibling.firstElementChild.children[1].children[0].textContent.trim();
             });
-            data.connectNames = [...names].map(function (element) {
-                return element.innerText.split(" ")[0];
+            data.profileHeadlines = [...data.pageButtons].map(function (element) {
+            	return element.parentNode.previousElementSibling.firstElementChild.children[1].children[2].textContent.trim();
             });
+
             console.debug("DEBUG: starting to send invites in " + config.actionDelay + " ms");
             setTimeout(() => { this.sendInvites(data, config) }, config.actionDelay);
         }
     },
     sendInvites: function (data, config) {
-        console.debug("remaining requests " + config.maxRequests);
-        if (config.maxRequests == 0){
-            console.info("INFO: max requests reached for the script run!");
-            this.complete(config);
-        } else {
-            console.debug('DEBUG: sending invite to ' + (data.pageButtonIndex + 1) + ' out of ' + data.pageButtonTotal);
-            var button = data.pageButtons[data.pageButtonIndex];
-            button.click();
-            if (config.addNote && config.note) {
-                console.debug("DEBUG: clicking Add a note in popup, if present, in " + config.actionDelay + " ms");
-                setTimeout(() => this.clickAddNote(data, config), config.actionDelay);
+        // Check if profile headline contains any of the specified keywords
+        if (this.containsKeyword(data.profileHeadlines[data.pageButtonIndex], config.profileHeadlineKeywords)) {
+
+            console.debug("remaining requests " + config.maxRequests);
+            if (config.maxRequests == 0){
+                console.info("INFO: max requests reached for the script run!");
+                this.complete(config);
             } else {
-                console.debug("DEBUG: clicking done in popup, if present, in " + config.actionDelay + " ms");
-                setTimeout(() => this.clickDone(data, config), config.actionDelay);
+                console.debug('DEBUG: sending invite to ' + (data.pageButtonIndex + 1) + ' out of ' + data.pageButtonTotal);
+                var button = data.pageButtons[data.pageButtonIndex];
+                button.click();
+                if (config.addNote && config.note) {
+                    console.debug("DEBUG: clicking Add a note in popup, if present, in " + config.actionDelay + " ms");
+                    setTimeout(() => this.clickAddNote(data, config), config.actionDelay);
+                } else {
+                    console.debug("DEBUG: clicking done in popup, if present, in " + config.actionDelay + " ms");
+                    setTimeout(() => this.clickDone(data, config), config.actionDelay);
+                }
             }
         }
+        else {
+            console.debug("DEBUG: profile headline doesn't match, skipping invite");
+            setTimeout(() => this.clickClose(data, config), config.actionDelay);
+        }
+
+    },
+    containsKeyword: function (headline, keywords) {
+        headline = headline.toLowerCase();
+        for (var i = 0; i < keywords.length; i++) {
+            if (headline.includes(keywords[i].toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     },
     clickAddNote: function (data, config) {
         var buttons = document.querySelectorAll('button');
@@ -158,4 +177,3 @@ Linkedin = {
 }
 
 Linkedin.init({}, Linkedin.config);
-
