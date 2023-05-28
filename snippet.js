@@ -10,6 +10,7 @@ Linkedin = {
         // set to false to skip adding note in invites
         addNote: true,
         note: `Hi, I’m Dhruv. I’m a CS Undergrad with experience in Data Science and Dev roles. I was hoping to find a role in your organisation that would be a good fit. I’d appreciate if you could refer me. Resume Link: https://drive.google.com/file/d/1-R6GT0dh83n-4i7ywle7Vx8GjTCqYWjs/view?usp=sharing`,
+        addHeadlineFilter: true,
         profileHeadlineKeywords: ["developer", "data", "analyst", "ceo", "cto"]
     },
     init: function (data, config) {
@@ -63,7 +64,7 @@ Linkedin = {
     },
     sendInvites: function (data, config) {
         // Check if profile headline contains any of the specified keywords
-        if (this.containsKeyword(data.profileHeadlines[data.pageButtonIndex], config.profileHeadlineKeywords)) {
+        if (config.addHeadlineFilter && this.containsKeyword(data.profileHeadlines[data.pageButtonIndex], config.profileHeadlineKeywords)) {
 
             console.debug("remaining requests " + config.maxRequests);
             if (config.maxRequests == 0){
@@ -82,9 +83,27 @@ Linkedin = {
                 }
             }
         }
-        else {
+        else if (config.addHeadlineFilter) {
             console.debug("DEBUG: profile headline doesn't match, skipping invite");
             setTimeout(() => this.clickClose(data, config), config.actionDelay);
+        }
+        else {
+            console.debug("remaining requests " + config.maxRequests);
+            if (config.maxRequests == 0){
+                console.info("INFO: max requests reached for the script run!");
+                this.complete(config);
+            } else {
+                console.debug('DEBUG: sending invite to ' + (data.pageButtonIndex + 1) + ' out of ' + data.pageButtonTotal);
+                var button = data.pageButtons[data.pageButtonIndex];
+                button.click();
+                if (config.addNote && config.note) {
+                    console.debug("DEBUG: clicking Add a note in popup, if present, in " + config.actionDelay + " ms");
+                    setTimeout(() => this.clickAddNote(data, config), config.actionDelay);
+                } else {
+                    console.debug("DEBUG: clicking done in popup, if present, in " + config.actionDelay + " ms");
+                    setTimeout(() => this.clickDone(data, config), config.actionDelay);
+                }
+            }
         }
 
     },
