@@ -43,7 +43,7 @@ You cannot run the snippet anywhere on LinkedIn. You need to identify a specific
 4. Now you can run the Chrome Snippet here.
 
 ### Creating and Running a Chrome Snippet
-#### Creating a Chrome Snippet {#create-chrome-snippet}
+#### Creating a Chrome Snippet <a name="create-chrome-snippet"></a>
 1. Open Google Chrome
 2. Right Click -> Inspect
 3. On the top right panel, click on 'Sources'
